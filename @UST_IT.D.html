@@ -16,19 +16,18 @@
         position: relative;
         overflow: hidden;
     }
-      #bg-img {
+
+    #bg-img {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        object-fit: cover;   /* تجعل الصورة تغطي الشاشة كاملة */
-        z-index: -1;         /* خلف المحتوى */
-        filter: brightness(50%); /* تغميق بسيط */
+        object-fit: cover;
+        z-index: -1;
+        filter: brightness(50%);
     }
 
-
-    /* صورة القروب كخلفية مع تأثيرات */
     .group-image {
         position: absolute;
         top: 50%;
@@ -40,13 +39,12 @@
         border-radius: 25px;
         box-shadow: 0 10px 40px rgba(0,0,0,0.5);
         z-index: 0;
-        opacity: 0.6; /* يمكن تعديل الشفافية */
+        opacity: 0.6;
     }
 
-    /* صندوق النموذج فوق الخلفية */
     .form-container {
         position: relative;
-        z-index: 1; /* فوق الصورة */
+        z-index: 1;
         background: rgba(0,0,0,0.6);
         padding: 30px 40px;
         border-radius: 15px;
@@ -61,7 +59,7 @@
         text-shadow: 1px 1px 2px #000;
     }
 
-    input[type="text"], input[type="file"] {
+    input[type="text"], input[type="email"], input[type="file"] {
         width: 100%;
         padding: 10px 15px;
         margin: 10px 0;
@@ -88,25 +86,79 @@
     }
 </style>
 </head>
+
 <body>
 
-<!-- صورة القروب -->
-<img src="https://i.ibb.co/Y48WXJT0/Screenshot-20251209-191047-com-whatsapp-View-Newsletter-Profile-Photo.jpg"alt="صورة القروب" class="group-image">
+<img src="https://i.ibb.co/Y48WXJT0/Screenshot-20251209-191047-com-whatsapp-View-Newsletter-Profile-Photo.jpg" alt="صورة القروب" class="group-image">
 <img id="bg-img" src="https://i.ibb.co/Y48WXJT0/Screenshot-20251209-191047-com-whatsapp-View-Newsletter-Profile-Photo.jpg" alt="Background">
 
-<!-- النموذج -->
 <div class="form-container">
     <h2>إرسال رسالة وصورة</h2>
 
     <form id="myForm" action="https://api.web3forms.com/submit" method="POST" enctype="multipart/form-data">
+
         <!-- مفتاح API -->
         <input type="hidden" name="access_key" value="282fe283-f337-4fd4-a741-b4904b7c0122">
+
+        <!-- البريد الإلكتروني -->
+        <input 
+            type="email" 
+            name="email" 
+            placeholder="البريد الإلكتروني (اختياري)"
+            autocomplete="email"
+            inputmode="email">
 
         <input type="text" name="message" placeholder="اكتب نصك هنا (اختياري)">
         <input type="file" name="image" accept="image/*">
 
         <button type="submit">إرسال</button>
     </form>
+</div>
+
+<script>
+document.getElementById('myForm').addEventListener('submit', function(e){
+    e.preventDefault();
+
+    const form = e.target;
+    const formData = new FormData(form);
+
+    const message = formData.get('message').trim();
+    const image = formData.get('image');
+
+    if(!message && (!image || image.size === 0)){
+        alert("ارجع ارفع ليك صورة ولا رسل رسالة ساي ان شاء الله 😀");
+        return;
+    }
+
+    fetch(form.action, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.body.innerHTML = `
+        <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    display: flex; justify-content: center; align-items: center; 
+                    height: 100vh; background: linear-gradient(135deg, #1e3c72, #2a5298);
+                    color: #fff; text-align: center; margin:0;">
+            <div style="background: rgba(0,0,0,0.6); padding: 30px 40px; border-radius: 15px;
+                        box-shadow: 0 8px 20px rgba(0,0,0,0.5); font-size: 18px; line-height: 1.5;">
+                كما قال الحكيم ذات يوم:<br><br>
+                الناس ترخي جسمها وتخلي الموية تمش والتمساح يعضي 🐊<br>
+              
+              اتخارج بعد دا
+            </div>
+        </div>`;
+    })
+    .catch(error => {
+        alert("حدث خطأ، حاول مرة أخرى.");
+        console.error(error);
+    });
+});
+</script>
+
+</body>
+</html>    </form>
 </div>
 
 <script>
