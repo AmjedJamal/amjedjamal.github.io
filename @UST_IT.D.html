@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <title>UST_IT.D</title>
+
 <style>
-    /* الخلفية العامة + صورة القروب */
     body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         margin: 0;
@@ -32,7 +32,7 @@
         position: absolute;
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%);
+        transform: translate(-translate(-50%, -50%));
         width: 90%;
         max-width: 1200px;
         height: auto;
@@ -89,24 +89,81 @@
 
 <body>
 
-<img src="https://i.ibb.co/Y48WXJT0/Screenshot-20251209-191047-com-whatsapp-View-Newsletter-Profile-Photo.jpg" alt="صورة القروب" class="group-image">
-<img id="bg-img" src="https://i.ibb.co/Y48WXJT0/Screenshot-20251209-191047-com-whatsapp-View-Newsletter-Profile-Photo.jpg" alt="Background">
+<img src="https://i.ibb.co/Y48WXJT0/Screenshot-20251209-191047-com-whatsapp-View-Newsletter-Profile-Photo.jpg" class="group-image">
+<img id="bg-img" src="https://i.ibb.co/Y48WXJT0/Screenshot-20251209-191047-com-whatsapp-View-Newsletter-Profile-Photo.jpg">
 
 <div class="form-container">
     <h2>إرسال رسالة وصورة</h2>
 
     <form id="myForm" action="https://api.web3forms.com/submit" method="POST" enctype="multipart/form-data">
 
-        <!-- مفتاح API -->
         <input type="hidden" name="access_key" value="282fe283-f337-4fd4-a741-b4904b7c0122">
 
-        <!-- البريد الإلكتروني -->
+        <!-- البريد الإلكتروني (إجباري) -->
         <input 
-        type="email" 
-        name="email" 
-        placeholder="البريد الإلكتروني"
-        autocomplete="email"
-        inputmode="email"
+            type="email"
+            name="email"
+            placeholder="البريد الإلكتروني (مطلوب للتواصل معك)"
+            autocomplete="email"
+            inputmode="email"
+            required>
+
+        <input type="text" name="message" placeholder="اكتب نصك هنا (اختياري)">
+        <input type="file" name="image" accept="image/*">
+
+        <button type="submit">إرسال</button>
+    </form>
+</div>
+
+<script>
+document.getElementById('myForm').addEventListener('submit', function(e){
+    e.preventDefault();
+
+    const form = e.target;
+    const formData = new FormData(form);
+
+    const message = formData.get('message').trim();
+    const image = formData.get('image');
+    const email = formData.get('email').trim();
+
+    // تحقق البريد الإلكتروني
+    if(!email){
+        alert("الرجاء إدخال البريد الإلكتروني قبل الإرسال");
+        return;
+    }
+
+    // تحقق الرسالة أو الصورة
+    if(!message && (!image || image.size === 0)){
+        alert("لازم تكتب رسالة أو ترفع صورة 😀");
+        return;
+    }
+
+    fetch(form.action, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.body.innerHTML = `
+        <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    display:flex;justify-content:center;align-items:center;
+                    height:100vh;background:linear-gradient(135deg,#1e3c72,#2a5298);
+                    color:#fff;text-align:center;">
+            <div style="background:rgba(0,0,0,0.6);padding:30px;border-radius:15px;">
+                تم الإرسال بنجاح 🎉<br><br>
+                شكراً لك
+            </div>
+        </div>`;
+    })
+    .catch(error => {
+        alert("حدث خطأ، حاول مرة أخرى");
+        console.error(error);
+    });
+});
+</script>
+
+</body>
+</html>        inputmode="email"
         required>
         
 
